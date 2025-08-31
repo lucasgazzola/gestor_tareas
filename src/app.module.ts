@@ -1,21 +1,26 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { UserEntity } from './modules/user/domain/user.entity';
 
 @Module({
   imports: [
+    // Configuración de TypeORM
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User],
-      synchronize: true, // crea la base y tablas automáticamente
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'gestor_tareas',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], // ✅ incluye todas las entidades
+      synchronize: true,
     }),
-    UsersModule,
+
+    // Módulos de la aplicación
+    AuthModule,
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
